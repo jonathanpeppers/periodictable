@@ -13,7 +13,7 @@ namespace PeriodicTableMaui.ViewModels
     {
         private PeriodicTableDataEngine dataEngine;
 
-        public ObservableCollection<ElementViewModel> Elements { get; } = new();
+        public ObservableCollection<ElementViewModel> Elements { get; private set; } = new();
         
         public MainPageViewModel(PeriodicTableDataEngine dataEngine)
         {
@@ -53,11 +53,13 @@ namespace PeriodicTableMaui.ViewModels
             PeriodicTableDataModel dataModel = await this.GetDataModelAsync();
             if(dataModel != null)
             {
-                this.Elements.Clear(); ;
+                var observable = new ObservableCollection<ElementViewModel>();
                 foreach(var element in dataModel.Elements) 
                 {
-                    this.Elements.Add(new ElementViewModel(element));
+                    observable.Add(new ElementViewModel(element));
                 }
+                this.Elements = observable;
+                OnPropertyChanged(nameof(Elements));
             }
             this.IsRefreshing = false;
         }
